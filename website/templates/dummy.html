@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gutenberg Book Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Gutenberg Book Search</h1>
+    <form method="GET" action="/result">
+        <input type="text" name="query" placeholder="Enter search term" value="{{ request.args.get('query', '') }}">
+        <button type="submit">Search</button>
+    </form>
+    {% block content %}
+        {% if download %}
+            {% for book in download %}
+            <div class="book">
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" alt="Book Cover" class="book-cover">
+                {% endif %}
+                <h3>{{ book.title }}</h3>
+                <p>Author: {{ book.authors | join(', ') }}</p>
+                <p>Download Links:
+                    {% for format, url in s.resolve_download_links(book).items() %}
+                    <a href="{{ url }}" target="_blank">{{ format }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+            {% endfor %}
+        {% elif query %}
+        <p>Nothing found for download.</p>
+        {% endif %}
+    {% endblock %}
+</body>
+</html>

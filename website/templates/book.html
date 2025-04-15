@@ -1,0 +1,5 @@
+{% extends "home.html" %}
+{% block title %}{{heading}}{% endblock %} 
+{% block content %}
+{{ render_template_string(book_content) }}
+{% endblock %}

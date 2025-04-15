@@ -1,0 +1,37 @@
+{% extends "home.html" %}
+{% block title %}Results{% endblock %} 
+{% block content %}
+<div id="results" class="container-sm mt-5 pt-5">
+    {% if reading %}
+        {% for book in reading %}
+            <div class="d-flex justify-content-center">
+                {% if book.formats['image/jpeg'] %}
+                    <div class="p-2 bd-highlight">
+                    <img src="{{ book.formats['image/jpeg'] }}" alt="Book Cover" class="book-cover">
+                    </div>
+                {% endif %}
+                <div class="p-2 bd-highlight">
+                    <h3>{{ book.title }}</h3>
+                    <p>Author: {{ book.authors | map(attribute='name') | join(', ') }}</p>
+                    <p>Formats: 
+                        {% for format, url in book.formats.items() %}
+                            {% if format != 'image/jpeg' %}
+                                <a href="{{ url }}" target="_blank">{{ format }}</a>{% if not loop.last %}, {% endif %}
+                            {% endif %}
+                            {% if format == 'text/html' %}
+                            <form method="GET" action="/book"> 
+                                <button name="url" type="submit" value="{{ url }}">Read</button>
+                            </form>
+                                <!-- <button type="button" class="btn btn-info" onclick="readBook(url)">Read</button> -->
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    {% elif query %}
+        <p>Nothing found for reading.</p>
+    {% endif %}
+    
+</div>
+{% endblock %}
